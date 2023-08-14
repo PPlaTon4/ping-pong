@@ -17,29 +17,36 @@ class GameSprite(pygame.sprite.Sprite):
 
 class Player(GameSprite):
     def update_l(self):
-        keys = key.get_pressed()
-        if keys[K_w] and self.rect.y > 5:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w] and self.rect.y > 5:
             self.rect.y -= self.speed
-        if keys[K_s] and self.rect.y < 450:
+        if keys[pygame.K_s] and self.rect.y < 400:
             self.rect.y += self.speed 
     
     def update_r(self):
-        keys = key.get_pressed()
-        if keys[K_UP] and self.rect.y > 5:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP] and self.rect.y > 5:
             self.rect.y -= self.speed
-        if keys[K_DOWN] and self.rect.y < 450:
+        if keys[pygame.K_DOWN] and self.rect.y < 400:
             self.rect.y += self.speed
 
-racket_l = Player("racket.png", 0, 0, 5, 50, 50)
+racket_l = Player("racket.png", 5, 0, 10, 30, 100)
+racket_r = Player("racket.png", 670, 0, 10, 30, 100)
 clock = pygame.time.Clock()
 Game = True
 Fps = 50
 while Game:
+    win.fill((255, 255, 255))
+
     racket_l.reset()
+    racket_l.update_l()
+    racket_r.reset()
+    racket_r.update_r()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             Game = False
-    racket_l.update_l()
-    win.fill((255, 255, 255))
+
+    
     clock.tick(Fps)
     pygame.display.update()
