@@ -1,8 +1,16 @@
 import pygame
 pygame.init()
-
+pygame.font.init()
 win = pygame.display.set_mode((700, 500))
 pygame.display.set_caption("Ping-Pong")
+
+speed_x = 3
+speed_y = 3
+finish = False
+
+font = pygame.font.Font(None, 35)
+lose1 = font.render('PLAYER 1 LOSE!', True, (180, 0, 0))
+lose2 = font.render('PLAYER 2 LOSE!', True, (180, 0, 0))
 
 class GameSprite(pygame.sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed, wight, height):
@@ -14,7 +22,7 @@ class GameSprite(pygame.sprite.Sprite):
         self.rect.y = player_y
     def reset(self):
         win.blit(self.image, (self.rect.x, self.rect.y))
-
+        
 class Player(GameSprite):
     def update_l(self):
         keys = pygame.key.get_pressed()
@@ -30,6 +38,7 @@ class Player(GameSprite):
         if keys[pygame.K_DOWN] and self.rect.y < 400:
             self.rect.y += self.speed
 
+ball = GameSprite("tenis_ball.png", 325, 225, 15, 50, 50)
 racket_l = Player("racket.png", 5, 0, 10, 30, 100)
 racket_r = Player("racket.png", 670, 0, 10, 30, 100)
 clock = pygame.time.Clock()
@@ -42,7 +51,22 @@ while Game:
     racket_l.update_l()
     racket_r.reset()
     racket_r.update_r()
+    ball.reset()
 
+    if not finish:
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+
+    if pygame.sprite.collide_rect(racket_l, ball) or pygame.sprite.collide_rect(racket_r, ball):
+        speed_x *= -1
+    if ball.rect.y < 0 or ball.rect.y > 450:
+        speed_y *= -1
+    if ball.rect.x < 0:
+        finish = True
+        win.blit(lose1, (260, 225))
+    if ball.rect.x > 700:
+        finish = True
+        win.blit(lose2, (260, 225))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             Game = False
